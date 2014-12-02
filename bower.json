@@ -1,0 +1,16 @@
+{
+  "name": "Breakout",
+  "version": "0.0.0",
+  "homepage": "https://github.com/AppSaloon/Breakout",
+  "authors": [
+    "Cinezaster <toon@appsaloon.be>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

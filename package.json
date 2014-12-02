@@ -1,0 +1,27 @@
+{
+  "name": "Breakout",
+  "version": "1.0.0",
+  "description": "Breakout html5 game",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AppSaloon/Breakout.git"
+  },
+  "keywords": [
+    "breakout",
+    "htlm5"
+  ],
+  "author": "Toon Nelissen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AppSaloon/Breakout/issues"
+  },
+  "homepage": "https://github.com/AppSaloon/Breakout",
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-livereload": "^2.1.1"
+  }
+}
