@@ -19,9 +19,12 @@
         <script type="text/javascript" src="./js/breakout.js"></script>
         <script type="text/javascript">
             $(function () {
-                var baloe = $('#canvas').breakout();
+                var game = $('#canvas').breakout();
                 $('button').click(function(){
-                    baloe.startGame();
+                    game.startGame();
+                });
+                $('#canvas').on('end',function (e,result){
+                    console.log(result);
                 });
             });
         </script>
