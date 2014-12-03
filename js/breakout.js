@@ -38,8 +38,10 @@
             var canvas = this[0];
             var context = canvas.getContext('2d');
             var score = 0;
+            var startTime;
             var elapsedTime;
             var gameLoop;
+            var gameResult;
             var ballDeltaX = 0;
 			var ballDeltaY =0;
 			var ballX = 0;
@@ -50,6 +52,7 @@
     		var paddleSpeed = 10;
     		var cursorX;
 			var cursorY;
+			var bricksToDo;
 
             function init(){
             	opts.bricksPerRow = opts.bricksLayout[0].length;
@@ -117,18 +120,21 @@
 			    }
 
 			    if (ballY + ballDeltaY + opts.ballRadius > canvas.height){
+			    	gameResult= "Game Over";
 			        endGame();
 			    }
 
-			    if (ballY + ballDeltaY + opts.ballRadius >= opts.paddleY){
+			    if (ballY + ballDeltaY + opts.ballRadius >= opts.paddleY && ballY + ballDeltaY + opts.ballRadius <= opts.paddleY + ballDeltaY + 1){
 				    // and it is positioned between the two ends of the paddle (is on top)
 				    if (ballX + ballDeltaX >= paddleX && ballX + ballDeltaX <= paddleX + opts.paddleWidth){
 				        ballDeltaY = -ballDeltaY;
-				        var quoficient = (ballX + ballDeltaX - paddleX - (opts.paddleWidth/2))/30;
+				        var quoficient = (ballX + ballDeltaX - paddleX - (opts.paddleWidth/2))/25;
 				        ballDeltaX = ballDeltaX + quoficient;
-				        console.log(quoficient, ballDeltaX);
 				    }
 				}
+
+				// prevents ball from going to much in an angle
+				ballDeltaX = ballDeltaX > Math.abs(ballDeltaY)+1 ? Math.abs(ballDeltaY)+1 : (ballDeltaX < -Math.abs(ballDeltaY)-1 ? -Math.abs(ballDeltaY)-1 : ballDeltaX);
 
 			    // Move the ball
 			    ballX = ballX + ballDeltaX;
@@ -136,9 +142,14 @@
 			}
 
             function createBricks(){
+            	bricksToDo = 0;
     			for (var i=0; i < opts.bricksLayout.length; i++) {
         			for (var j=0; j < opts.bricksLayout[i].length; j++) {
-            			drawBrick(j,i,opts.bricksLayout[i][j]);
+        				var brick = opts.bricksLayout[i][j];
+            			drawBrick(j,i,brick);
+            			if (brick === 3){
+            				bricksToDo++;
+            			}
         			}
     			}
 			}
@@ -159,6 +170,7 @@
 					score ++;
 					opts.bricksLayout[i][j] = 0;
 				}
+				ballDeltaY = ballDeltaY - 0.1;
 			}
 
 			function collisionXWithBricks(){
@@ -233,6 +245,7 @@
     			ballDeltaX = -2;
     			paddleMove = false;
     			paddleDeltaX = 0;
+    			startTime = new Date();
 
 		       	gameLoop = setInterval(animate,20);
 
@@ -247,9 +260,12 @@
 			}
 
 			function endGame() {
+				elapsedTime = (new Date()) - startTime;
 				clearInterval(gameLoop);
 				$(canvas).trigger('end',[{
-					score: score, 
+					result: gameResult,
+					score: score,
+					todo: bricksToDo,
 					elapsedTime: elapsedTime
 				}]);
 			}
