@@ -1,0 +1,52 @@
+#game {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #008a3e;
+    position: relative;
+    width: 799px;
+    padding: 3px;
+    font-family: "cocon"
+}
+#game .topBar{
+	height: 70px;
+}
+
+canvas {
+}
+.overlay {
+	width: 454px;
+    position: absolute;
+    top: 150px;
+    left: 150px;
+    text-align: center;
+    background-color: #fcf68e;
+    padding: 40px;
+    font-size: 24px;
+}
+.overlay p {
+	margin-top: 0;
+}
+
+.overlay p span{
+	color: #d40038;
+}
+.overlay a{
+	display: block;
+	background-color: #008a3e;
+	border: none;
+	color: #ffffff;
+	font-family: "cocon";
+	padding: 20px 0px;
+}
+
+#score {
+    float: left;
+    color: #fcf68e;
+}
+#time {
+    float: right;
+    color: #fcf68e;
+}
+

@@ -4,28 +4,95 @@
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <title>Breakout - A fast fun game</title>
         <script src="./bower_components/jquery/dist/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="./css/breakout_style.css">
     </head>
     <body>    
-        <style type="text/css">
-            canvas {
-                border:1px solid black;
-            }
-        </style>
-        <h1>Breakout</h1>
-        <canvas id="canvas" width="400" height="500"> 
-          Your browser does not support the HTML5 Canvas feature. This game uses new HTML5 features and will only work on the latest versions of Firefox, Safari or Chrome (and maybe Internet Explorer 9).         
-        </canvas>
-        <button>start</button>
+        <div id="game">
+            <div class="topBar">
+                <div id="score">choco X<span>0</span></div>
+                <div id="time">klok <span>0</span></div>
+            </div>
+            
+            <canvas id="canvas" width="799" height="595"> 
+              Your browser does not support the HTML5 Canvas feature. This game uses new HTML5 features and will only work on the latest versions of Firefox, Safari or Chrome (and maybe Internet Explorer 9).         
+            </canvas>
+            <div id="name">Lotte:</div>
+            <div id="lives"></div>
+            <div class="overlay" id="startOverlay" style="display:block;">
+                <p>
+                    Beweeg je <span>computermuis</span> als je op<br>
+                    een computer speelt of gebruik <br>
+                    je <span>vingers</span> als je op tablet speelt.<br>
+                    <img src="./img/howtocontrol.jpg">
+                </p>
+                 
+                <a id="startButton">Klaar? start!</a>
+            </div>
+            <div class="overlay" id="wonOverlay" style="display:none;">
+                <p>
+                    Goed zo! je hebt alle gouden Cocos <br>
+                    verzameld. Dit is jouw tijd:
+                </p>
+                <p id="finalScore"></p>
+                <button id="sendScoreButton">Verstuur je score</button>
+                <button id="practiceButton">Nog even oefenen?</button>
+                <hr>
+                <button id="practiceWhitoutButton">Oefenen zonder code</button>
+            </div>
+            <div class="overlay" id="gameOverOverlay" style="display:none;">
+                <p>
+                    Game over!
+                </p>
+                <button id="practiceButton">Nog even oefenen?</button>
+                <hr>
+                <button id="practiceWhitoutButton">Oefenen zonder code</button>
+            </div>
+        </div>
+        
+        
         <script type="text/javascript" src="./js/breakout.js"></script>
         <script type="text/javascript">
             $(function () {
                 var game = $('#canvas').breakout();
-                $('button').click(function(){
+                $('#startButton').click(function(){
+                    $(this).closest('.overlay').fadeOut(200);
                     game.startGame();
                 });
-                $('#canvas').on('end',function (e,result){
-                    console.log(result);
+                $('#canvas').on('gameOver',function (e,result){
+                    $('#gameOverOverlay').show();
+                    showLives(0,3);
                 });
+                $('#canvas').on('lostLive',function (e,result){
+                    console.log(result);
+                    showLives(result.lives,3);
+                });
+                $('#canvas').on('score',function (e,result){
+                    console.log(result);
+                    $('#score span').text(result.score);
+                });
+                $('#canvas').on('won',function (e,result){
+                    console.log(result);
+                    $('#wonOverlay').show();
+                    $('#finalScore').text(result.elapsedTime);
+                    $time.text(result.elapsedTime);
+                });
+
+                var $time = $('#time span');
+                $('#canvas').on('timeUpdate',function (e,result){
+                    $time.text(result.elapsedTime);
+                });
+
+                function showLives(livesLeft,lives) {
+                    for (var i = 0; i < lives; i++) {
+                        if (i >= livesLeft) {
+                            console.log('dood');
+                        } else {
+                            console.log('leven');
+                        }
+                    }
+                }
+
+                showLives(3,3);
             });
         </script>
     </body>

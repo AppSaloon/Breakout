@@ -31,12 +31,15 @@
         			},{
         				color: 'rgba(50,100,50,.5)'
         			}
-        		]
+        		],
+        		lives: 3
         	};
         	var opts = $.extend( {}, defaults, options );
 
             var canvas = this[0];
+            var $canvas = $(canvas);
             var context = canvas.getContext('2d');
+            var cursorCorrection = $canvas.position().left;
             var score = 0;
             var startTime;
             var elapsedTime;
@@ -53,6 +56,8 @@
     		var cursorX;
 			var cursorY;
 			var bricksToDo;
+			var backgroundImage = new Image();
+			backgroundImage.src = "img/breakout_background.jpg";
 
             function init(){
             	opts.bricksPerRow = opts.bricksLayout[0].length;
@@ -63,12 +68,16 @@
             	paddleX = opts.paddleX- (opts.paddleWidth/2);
             	paddleDeltaX = opts.paddleDeltaX;
 
+            	backgroundImage.src = "img/breakout_background.jpg";
+            	drawBackground();
             	drawPaddle();
 				drawBall();
 				createBricks();
 
+				showOverlay();
+
 				document.onmousemove = function(e){
-					cursorX = e.pageX;
+					cursorX = e.pageX - cursorCorrection;
 					cursorY = e.pageY;
 				};
             }
@@ -78,6 +87,9 @@
             		case "rectangle":
             			context.fillStyle = opts.paddleColor;
             			context.fillRect(paddleX ,opts.paddleY,opts.paddleWidth,opts.paddleHeight);
+            			context.font = "12px Verdana";
+            			context.fillStyle = "red";
+						context.fillText("Lotte", paddleX + opts.paddleWidth - 30 ,opts.paddleY + 10);
             			break;
             		default:
             			//default code
@@ -120,11 +132,18 @@
 			    }
 
 			    if (ballY + ballDeltaY + opts.ballRadius > canvas.height){
-			    	gameResult= "Game Over";
-			        endGame();
+			    	opts.lives--;
+			        if (!opts.lives) {
+			        	endGame();
+			        } else {
+			        	reStartGame();
+			        	$canvas.trigger('lostLive',[{
+							lives: opts.lives 
+						}]);
+			        }
 			    }
 
-			    if (ballY + ballDeltaY + opts.ballRadius >= opts.paddleY && ballY + ballDeltaY + opts.ballRadius <= opts.paddleY + ballDeltaY + 1){
+			    if (ballY + ballDeltaY + opts.ballRadius >= opts.paddleY + opts.paddleHeight/2 && ballY + ballDeltaY + opts.ballRadius <= opts.paddleY + opts.paddleHeight/2 + ballDeltaY + 1){
 				    // and it is positioned between the two ends of the paddle (is on top)
 				    if (ballX + ballDeltaX >= paddleX && ballX + ballDeltaX <= paddleX + opts.paddleWidth){
 				        ballDeltaY = -ballDeltaY;
@@ -159,16 +178,24 @@
 					context.fillStyle = opts.bricksTypes[type-1].color;
 					context.fillRect(x*opts.bricksWidth,y*opts.bricksHeight,opts.bricksWidth,opts.bricksHeight);
 				} else {
-					context.clearRect(x*opts.bricksWidth,y*opts.bricksHeight,opts.bricksWidth,opts.bricksHeight);
+					//context.clearRect(x*opts.bricksWidth,y*opts.bricksHeight,opts.bricksWidth,opts.bricksHeight);
 				}
 			}
 
 			function brickHit (i,j) {
 				var brick = opts.bricksLayout[i][j] --;
 
-				if (brick == 3) {
+				if (brick === 3) {
 					score ++;
 					opts.bricksLayout[i][j] = 0;
+					$canvas.trigger('score',[{
+						score: score
+					}]);
+					if (score === 5) {
+						wonGame();
+					} 
+					
+
 				}
 				ballDeltaY = ballDeltaY - 0.1;
 			}
@@ -229,8 +256,25 @@
 			    return bumpedY;
 			}
 
-			function animate() {
+			function drawLives() {
+				/*var y =canvas.height-20;
+				for (var i = opts.lives - 1; i >= 0; i--) {
+					context.fillRect(canvas.width/2+ (20*i),y,10,10);
+				}*/
+			}
+
+			function drawBackground () {
 				context.clearRect(0,0,canvas.width,canvas.height);
+				context.drawImage(backgroundImage,0,0);
+			}
+
+			function showOverlay() {
+				context.fillStyle = "rgba(0,0,0,0.5)";
+				context.fillRect(0,0,canvas.width,canvas.height);
+			}
+ 
+			function animate() {
+				drawBackground();
 
 				createBricks();
 				
@@ -238,6 +282,12 @@
 				movePaddle();
 				drawPaddle();
 				drawBall();
+
+				drawLives();
+
+				$canvas.trigger('timeUpdate', [{
+					elapsedTime: new Date() - startTime
+				}]);
 			}
 
 			function startGame() {
@@ -255,19 +305,33 @@
 		       	$(document).mouseup(function(e){
 		       		paddleMove= false;
 		       	});
+			}
 
-
+			function reStartGame () {
+				ballX = canvas.width/2;
+        		ballY = (canvas.height/3)*2;
+				ballDeltaY = 0;
+    			ballDeltaX = 0;
+    			setTimeout(function () {
+    				ballDeltaY = -4;
+    				ballDeltaX = -2;
+    			}, 1000);
 			}
 
 			function endGame() {
+				elapsedTime = new Date() - startTime;
+				clearInterval(gameLoop);
+				$(canvas).trigger('gameOver',[]);
+				showOverlay();
+			}
+
+			function wonGame() {
 				elapsedTime = (new Date()) - startTime;
 				clearInterval(gameLoop);
-				$(canvas).trigger('end',[{
-					result: gameResult,
-					score: score,
-					todo: bricksToDo,
+				$(canvas).trigger('won',[{
 					elapsedTime: elapsedTime
 				}]);
+				showOverlay();
 			}
 
             init();
@@ -275,6 +339,9 @@
             return $.extend({
 		       	startGame: function() {
 		       		startGame();
+		       	},
+		       	getElapsedTime: function () {
+		       		return (new Date()) - startTime;
 		       	}
 		    });
         }

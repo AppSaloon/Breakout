@@ -3,5 +3,5 @@ var gulp = require('gulp'),
 
 gulp.task('watch', function() {
   livereload.listen();
-  gulp.watch(['js/**','index.html']).on('change', livereload.changed);
+  gulp.watch(['js/**','css/**','index.html']).on('change', livereload.changed);
 });
