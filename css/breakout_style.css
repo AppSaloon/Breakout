@@ -5,15 +5,42 @@
     user-select: none;
     background-color: #008a3e;
     position: relative;
-    width: 799px;
-    padding: 3px;
-    font-family: "cocon"
+    width: 805px;
+    font-family: "cocon";
+    background-image: url('../img/golden_coco.png');
+    background-repeat: no-repeat;
+    background-position: top left;
 }
 #game .topBar{
 	height: 70px;
 }
+#game .topBar #score {
+    float: left;
+    color: #fcf68e;
+    padding-top: 10px;
+    padding-left: 90px;
+    font-size: 22px;
+}
+
+#game .topBar #score .number{
+    font-size: 40px;
+    padding-left: 5px;
+}
+
+#game .topBar #time {
+    float: right;
+    color: #fcf68e;
+    width: 200px;
+    font-size: 24px;
+    padding-top: 18px;
+}
+#game .topBar #time .seconds{
+    font-size: 35px;
+}
 
 canvas {
+    margin-right: 3px;
+    margin-left: 3px;
 }
 .overlay {
 	width: 454px;
@@ -39,14 +66,5 @@ canvas {
 	color: #ffffff;
 	font-family: "cocon";
 	padding: 20px 0px;
-}
-
-#score {
-    float: left;
-    color: #fcf68e;
-}
-#time {
-    float: right;
-    color: #fcf68e;
 }
 

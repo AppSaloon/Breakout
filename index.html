@@ -8,22 +8,24 @@
     </head>
     <body>    
         <div id="game">
+            <input name="name" type="hidden" value="Lotte">
+            <div style="display:none;">
+                <img src="./img/breakout_background.jpg">
+            </div>
             <div class="topBar">
-                <div id="score">choco X<span>0</span></div>
-                <div id="time">klok <span>0</span></div>
+                <div id="score">X<span class="number">0</span></div>
+                <div id="time"><img src="./img/klokje.png"> <span><span class="seconds">00.0</span></span></div>
             </div>
             
             <canvas id="canvas" width="799" height="595"> 
               Your browser does not support the HTML5 Canvas feature. This game uses new HTML5 features and will only work on the latest versions of Firefox, Safari or Chrome (and maybe Internet Explorer 9).         
             </canvas>
-            <div id="name">Lotte:</div>
-            <div id="lives"></div>
             <div class="overlay" id="startOverlay" style="display:block;">
                 <p>
                     Beweeg je <span>computermuis</span> als je op<br>
                     een computer speelt of gebruik <br>
                     je <span>vingers</span> als je op tablet speelt.<br>
-                    <img src="./img/howtocontrol.jpg">
+                    <img src="./img/mouse_or_swipe.png">
                 </p>
                  
                 <a id="startButton">Klaar? start!</a>
@@ -53,7 +55,8 @@
         <script type="text/javascript" src="./js/breakout.js"></script>
         <script type="text/javascript">
             $(function () {
-                var game = $('#canvas').breakout();
+                var contestantName = $('input[name="name"]').val();
+                var game = $('#canvas').breakout({name:contestantName});
                 $('#startButton').click(function(){
                     $(this).closest('.overlay').fadeOut(200);
                     game.startGame();
@@ -73,13 +76,13 @@
                 $('#canvas').on('won',function (e,result){
                     console.log(result);
                     $('#wonOverlay').show();
-                    $('#finalScore').text(result.elapsedTime);
-                    $time.text(result.elapsedTime);
+                    $('#finalScore').html(result.elapsedTime.clock);
+                    $time.html(result.elapsedTime.clock);
                 });
 
                 var $time = $('#time span');
                 $('#canvas').on('timeUpdate',function (e,result){
-                    $time.text(result.elapsedTime);
+                    $time.html(result.elapsedTime.clock);
                 });
 
                 function showLives(livesLeft,lives) {

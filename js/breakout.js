@@ -4,15 +4,15 @@
         	var defaults = {
         		paddleType:"rectangle",
         		paddleX: 200,
-        		paddleY: 460,
-        		paddleWidth:100,
-        		paddleHeight:15,
+        		paddleY: 430,
+        		paddleWidth:246,
+        		paddleHeight:53,
         		paddleDeltaX:0,
         		paddleDeltaY:0,
         		paddleColor: "rgb(0,0,0)",
         		ballX: 300,
         		ballY: 300,
-        		ballRadius: 10,
+        		ballRadius: 12,
         		ballColor: "rgb(0,0,0)",
         		bricksPerRow: 0,
         		bricksHeight: 20,
@@ -57,7 +57,16 @@
 			var cursorY;
 			var bricksToDo;
 			var backgroundImage = new Image();
+			backgroundImage.onload = function () {
+				init();
+			};
 			backgroundImage.src = "img/breakout_background.jpg";
+			var ballImage = new Image();
+			ballImage.src = 'img/bal.png';
+			var livesImage = new Image();
+			livesImage.src = 'img/levens_sprite.png';
+			var spoonImage = new Image();
+			spoonImage.src = 'img/spoon.png';
 
             function init(){
             	opts.bricksPerRow = opts.bricksLayout[0].length;
@@ -68,11 +77,12 @@
             	paddleX = opts.paddleX- (opts.paddleWidth/2);
             	paddleDeltaX = opts.paddleDeltaX;
 
-            	backgroundImage.src = "img/breakout_background.jpg";
             	drawBackground();
             	drawPaddle();
 				drawBall();
 				createBricks();
+				drawName ();
+				drawLives();
 
 				showOverlay();
 
@@ -85,15 +95,22 @@
             function drawPaddle () {
             	switch (opts.paddleType) {
             		case "rectangle":
-            			context.fillStyle = opts.paddleColor;
-            			context.fillRect(paddleX ,opts.paddleY,opts.paddleWidth,opts.paddleHeight);
-            			context.font = "12px Verdana";
-            			context.fillStyle = "red";
-						context.fillText("Lotte", paddleX + opts.paddleWidth - 30 ,opts.paddleY + 10);
+            			//context.fillStyle = opts.paddleColor;
+            			//context.fillRect(paddleX ,opts.paddleY,opts.paddleWidth,opts.paddleHeight);
+            			context.drawImage(spoonImage,paddleX,opts.paddleY);
+            			context.font = "12px cocon";
+            			context.fillStyle = "rgba(0,0,0,0.4)";
+						context.fillText(opts.name, paddleX + opts.paddleWidth - 50 ,opts.paddleY + 30);
             			break;
             		default:
             			//default code
             	}
+            }
+
+            function drawName () {
+            	context.font = 'normal 18pt cocon';
+            	context.fillStyle ="#d40038";
+            	context.fillText(opts.name, 165, 575);
             }
 
             function movePaddle() {
@@ -116,22 +133,23 @@
             }
 
             function drawBall() {
-            	context.fillStyle = opts.ballColor;
-            	context.beginPath();
-            	context.arc(ballX,ballY,opts.ballRadius,0,Math.PI*2,true);
-            	context.fill(); 
+            	//context.fillStyle = opts.ballColor;
+            	//context.beginPath();
+            	//context.arc(ballX,ballY,opts.ballRadius,0,Math.PI*2,true);
+        		context.drawImage(ballImage, ballX-16, ballY-16);
+            	//context.fill(); 
             }
 
             function moveBall(){
-            	if (ballY + ballDeltaY - opts.ballRadius < 0 || collisionYWithBricks()){
+            	if (ballY + ballDeltaY - opts.ballRadius + 16 < 0 || collisionYWithBricks()){
 			        ballDeltaY = -ballDeltaY;
 			    }
 
-			    if ((ballX + ballDeltaX - opts.ballRadius < 0) || (ballX + ballDeltaX + opts.ballRadius > canvas.width) || collisionXWithBricks()){  
+			    if ((ballX + ballDeltaX - opts.ballRadius + 16 < 0) || (ballX + ballDeltaX + opts.ballRadius + 16 > canvas.width) || collisionXWithBricks()){  
 			        ballDeltaX = -ballDeltaX;
 			    }
 
-			    if (ballY + ballDeltaY + opts.ballRadius > canvas.height){
+			    if (ballY + ballDeltaY + opts.ballRadius -16 > canvas.height){
 			    	opts.lives--;
 			        if (!opts.lives) {
 			        	endGame();
@@ -143,11 +161,11 @@
 			        }
 			    }
 
-			    if (ballY + ballDeltaY + opts.ballRadius >= opts.paddleY + opts.paddleHeight/2 && ballY + ballDeltaY + opts.ballRadius <= opts.paddleY + opts.paddleHeight/2 + ballDeltaY + 1){
+			    if (ballY + ballDeltaY + opts.ballRadius + 16 >= opts.paddleY + opts.paddleHeight/2 && ballY + ballDeltaY + opts.ballRadius + 16 <= opts.paddleY + opts.paddleHeight/2 + ballDeltaY + 1){
 				    // and it is positioned between the two ends of the paddle (is on top)
-				    if (ballX + ballDeltaX >= paddleX && ballX + ballDeltaX <= paddleX + opts.paddleWidth){
+				    if (ballX + ballDeltaX + 16 >= paddleX && ballX + ballDeltaX + 16 <= paddleX + opts.paddleWidth){
 				        ballDeltaY = -ballDeltaY;
-				        var quoficient = (ballX + ballDeltaX - paddleX - (opts.paddleWidth/2))/25;
+				        var quoficient = (ballX + ballDeltaX + 16 - paddleX - (opts.paddleWidth/2))/25;
 				        ballDeltaX = ballDeltaX + quoficient;
 				    }
 				}
@@ -209,14 +227,14 @@
 			                var brickY = i * opts.bricksHeight;
 			                if (
 			                    // barely touching from left
-			                    ((ballX + ballDeltaX + opts.ballRadius >= brickX) &&
-			                    (ballX + opts.ballRadius <= brickX)) ||
+			                    ((ballX + ballDeltaX + opts.ballRadius - 16 >= brickX) &&
+			                    (ballX + opts.ballRadius - 16 <= brickX)) ||
 			                    // barely touching from right
-			                    ((ballX + ballDeltaX - opts.ballRadius <= brickX + opts.bricksWidth)&&
-			                    (ballX - opts.ballRadius >= brickX + opts.bricksWidth))
+			                    ((ballX + ballDeltaX - opts.ballRadius + 16 <= brickX + opts.bricksWidth)&&
+			                    (ballX - opts.ballRadius + 16 >= brickX + opts.bricksWidth))
 			                    ){      
-			                    if ((ballY + ballDeltaY -opts.ballRadius <= brickY + opts.bricksHeight) &&
-			                        (ballY + ballDeltaY + opts.ballRadius >= brickY)){                                                    
+			                    if ((ballY + ballDeltaY -opts.ballRadius + 16 <= brickY + opts.bricksHeight) &&
+			                        (ballY + ballDeltaY + opts.ballRadius - 16 >= brickY)){                                                    
 			                        // weaken brick and increase score
 			                        brickHit(i,j);
 			 
@@ -238,13 +256,13 @@
 			                var brickY = i * opts.bricksHeight;
 			       			if (
 			                    // barely touching from below
-			                    ((ballY + ballDeltaY - opts.ballRadius <= brickY + opts.bricksHeight) && 
-			                    (ballY - opts.ballRadius >= brickY + opts.bricksHeight)) ||
+			                    ((ballY + ballDeltaY - opts.ballRadius + 16 <= brickY + opts.bricksHeight) && 
+			                    (ballY - opts.ballRadius + 16 >= brickY + opts.bricksHeight)) ||
 			                    // barely touching from above
-			                    ((ballY + ballDeltaY + opts.ballRadius >= brickY) &&
-			                    (ballY + opts.ballRadius <= brickY ))){
-			                    if (ballX + ballDeltaX + opts.ballRadius >= brickX && 
-			                        ballX + ballDeltaX - opts.ballRadius <= brickX + opts.bricksWidth){                                      
+			                    ((ballY + ballDeltaY + opts.ballRadius - 16 >= brickY) &&
+			                    (ballY + opts.ballRadiu -16 <= brickY ))){
+			                    if (ballX + ballDeltaX + opts.ballRadius - 16 >= brickX && 
+			                        ballX + ballDeltaX - opts.ballRadius +16 <= brickX + opts.bricksWidth){                                      
 			                        // weaken brick and increase score
 			                        brickHit(i,j); 
 			                        bumpedY = true;
@@ -257,10 +275,14 @@
 			}
 
 			function drawLives() {
-				/*var y =canvas.height-20;
-				for (var i = opts.lives - 1; i >= 0; i--) {
-					context.fillRect(canvas.width/2+ (20*i),y,10,10);
-				}*/
+				var y =canvas.height-48;
+				for (var i = 3 - 1; i >= 0; i--) {
+					if (opts.lives > i) {
+						context.drawImage(livesImage,0,0,44,38,canvas.width/2+100+ (44*i), y, 44,38);
+					} else {
+						context.drawImage(livesImage,48,0,40,38,canvas.width/2+100+ (44*i), y, 40,38);
+					}
+				}
 			}
 
 			function drawBackground () {
@@ -284,9 +306,10 @@
 				drawBall();
 
 				drawLives();
+				drawName ();
 
 				$canvas.trigger('timeUpdate', [{
-					elapsedTime: new Date() - startTime
+					elapsedTime: millisecondsToStr(new Date() - startTime)
 				}]);
 			}
 
@@ -323,16 +346,38 @@
 				clearInterval(gameLoop);
 				$(canvas).trigger('gameOver',[]);
 				showOverlay();
+				setTimeout(function() {
+					showOverlay();
+				}, 30);
 			}
 
 			function wonGame() {
 				elapsedTime = (new Date()) - startTime;
 				clearInterval(gameLoop);
 				$(canvas).trigger('won',[{
-					elapsedTime: elapsedTime
+					elapsedTime: millisecondsToStr(elapsedTime)
 				}]);
 				showOverlay();
+				setTimeout(function() {
+					showOverlay();
+				}, 30);
 			}
+
+			function millisecondsToStr (ms) {
+	            var secondRest = ms % 1000;
+	            var totalSeconds = (ms - secondRest) / 1000;
+				var seconds = totalSeconds % 60;
+
+	            var milliseconds = Math.round( secondRest / 10);
+	            var minutes = ~~(totalSeconds / 60);
+
+	            return {
+	            	minutes : minutes,
+	                seconds : seconds,
+	                milliseconds : milliseconds,
+	                clock : (seconds === 0)? '<span class="seconds">0:00.</span>'+ milliseconds:'<span class="seconds">' + minutes + ':' + ('0' + seconds).slice(-2) + ".</span>" + milliseconds
+	            };
+	        }
 
             init();
 
