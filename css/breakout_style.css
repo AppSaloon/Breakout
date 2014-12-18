@@ -45,8 +45,8 @@ canvas {
 .overlay {
 	width: 454px;
     position: absolute;
-    top: 150px;
-    left: 150px;
+    top: 130px;
+    left: 135px;
     text-align: center;
     background-color: #fcf68e;
     padding: 40px;
@@ -66,5 +66,36 @@ canvas {
 	color: #ffffff;
 	font-family: "cocon";
 	padding: 20px 0px;
+}
+
+.overlay a.red{
+    background-color: #d40037;
+}
+
+#game .overlay a span{
+    font-family: verdana;
+    font-size: 13px;
+}
+#game .overlay a.doubleLine{
+    line-height: 21px;
+    margin-bottom: 10px;
+    padding: 14px;
+}
+
+#game .overlay .breakout-btn{
+
+}
+
+#game .overlay hr{
+    border: 2px solid #cbc564;
+}
+
+#game .overlay #finalScore{
+    color: #d40038;
+}
+
+#game .overlay #finalScore .seconds{
+    font-size: 45px;
+    margin-top: -15px;
 }
 

@@ -10,27 +10,26 @@
         		paddleDeltaX:0,
         		paddleDeltaY:0,
         		paddleColor: "rgb(0,0,0)",
-        		ballX: 300,
-        		ballY: 300,
+        		ballX: 400,
+        		ballY: 340,
         		ballRadius: 12,
         		ballColor: "rgb(0,0,0)",
-        		bricksPerRow: 0,
-        		bricksHeight: 20,
+        		bricksPerRow: 10,
+        		bricksHeight: 55,
         		bricksWidth: 0,
         		bricksLayout: [
-        			[2,2,2,2,2,3,2,2],
-				    [2,2,3,2,2,2,3,2],
-				    [2,2,2,2,2,3,2,2],
-				    [2,2,3,2,2,2,2,2]
+        			[1,1,1,1,1,1,3,1,1,1],
+				    [1,1,3,1,1,1,1,1,1,1],
+				    [1,1,1,1,1,1,1,3,1,1],
+				    [1,1,1,3,1,1,1,1,1,1],
+				    [1,1,3,1,1,1,1,1,1,1],
         		],
         		bricksTypes: [
-        			{
-        				color: 'orange'
-        			},{
-        				color: 'rgb(100,200,100)'
-        			},{
-        				color: 'rgba(50,100,50,.5)'
-        			}
+        			[1,1,1,1,1,1,3,1,1,1],
+				    [1,1,3,1,1,1,1,1,1,1],
+				    [1,1,1,1,1,2,1,3,1,1],
+				    [1,1,1,3,1,1,1,1,1,1],
+				    [1,1,3,1,1,1,1,1,1,1],
         		],
         		lives: 3
         	};
@@ -67,10 +66,17 @@
 			livesImage.src = 'img/levens_sprite.png';
 			var spoonImage = new Image();
 			spoonImage.src = 'img/spoon.png';
+			var popsImage = new Image();
+			popsImage.src = 'img/pops.png';
+			popsImage.onload = function () {
+				init();
+			};
 
             function init(){
+            	generateBricksType();
+
             	opts.bricksPerRow = opts.bricksLayout[0].length;
-            	opts.bricksWidth = canvas.width/opts.bricksPerRow;
+            	opts.bricksWidth = (canvas.width-20)/opts.bricksPerRow;
 
             	ballX = opts.ballX;
             	ballY = opts.ballY;
@@ -92,6 +98,16 @@
 				};
             }
 
+            function generateBricksType () {
+            	
+            	for (var i = 0; i < opts.bricksTypes.length; i++) {
+            		for (var j = 0; j < opts.bricksTypes[i].length; j++) {
+            			opts.bricksTypes[i][j] = getRandomInt(1,4);
+            		}
+            	}
+            	console.log(opts.bricksTypes);
+            }
+
             function drawPaddle () {
             	switch (opts.paddleType) {
             		case "rectangle":
@@ -99,8 +115,9 @@
             			//context.fillRect(paddleX ,opts.paddleY,opts.paddleWidth,opts.paddleHeight);
             			context.drawImage(spoonImage,paddleX,opts.paddleY);
             			context.font = "12px cocon";
+            			context.textAlign = 'right';
             			context.fillStyle = "rgba(0,0,0,0.4)";
-						context.fillText(opts.name, paddleX + opts.paddleWidth - 50 ,opts.paddleY + 30);
+						context.fillText(opts.name, paddleX + opts.paddleWidth - 8 ,opts.paddleY + 30);
             			break;
             		default:
             			//default code
@@ -109,8 +126,9 @@
 
             function drawName () {
             	context.font = 'normal 18pt cocon';
+            	context.textAlign = 'left';
             	context.fillStyle ="#d40038";
-            	context.fillText(opts.name, 165, 575);
+            	context.fillText(opts.name + ":", 165, 575);
             }
 
             function movePaddle() {
@@ -165,7 +183,7 @@
 				    // and it is positioned between the two ends of the paddle (is on top)
 				    if (ballX + ballDeltaX + 16 >= paddleX && ballX + ballDeltaX + 16 <= paddleX + opts.paddleWidth){
 				        ballDeltaY = -ballDeltaY;
-				        var quoficient = (ballX + ballDeltaX + 16 - paddleX - (opts.paddleWidth/2))/25;
+				        var quoficient = (ballX + ballDeltaX + 16 - paddleX - (opts.paddleWidth/2))/35;
 				        ballDeltaX = ballDeltaX + quoficient;
 				    }
 				}
@@ -192,13 +210,35 @@
 			}
 
 			function drawBrick(x,y,type) {
-				if (type > 0) {
-					context.fillStyle = opts.bricksTypes[type-1].color;
-					context.fillRect(x*opts.bricksWidth,y*opts.bricksHeight,opts.bricksWidth,opts.bricksHeight);
-				} else {
+				var brick
+				if (type > 0 && type < 3) {
+					var dx;
+					switch (opts.bricksTypes[y][x]) {
+						case 1:
+							dx = 0;
+							break;
+						case 2:
+							dx = 80;
+							break;
+						case 3:
+							dx = 160;
+							break;
+						case 4:
+							dx = 240;
+							break;
+
+					}
+					context.drawImage(popsImage,dx,0,80,72,x*opts.bricksWidth +10, y*55, opts.bricksWidth,80/opts.bricksWidth * 72);
+					//context.fillRect(x*opts.bricksWidth +10, y*55,opts.bricksWidth,72);
+				} else if (type == 3) {
 					//context.clearRect(x*opts.bricksWidth,y*opts.bricksHeight,opts.bricksWidth,opts.bricksHeight);
+					context.drawImage(popsImage,320,0,80,72,(x*((canvas.width-40)/10)) + 10, y*55, 80,72);
 				}
 			}
+
+			function getRandomInt(min, max) {
+    			return Math.floor(Math.random() * (max - min + 1)) + min;
+    		}
 
 			function brickHit (i,j) {
 				var brick = opts.bricksLayout[i][j] --;
@@ -318,9 +358,19 @@
     			ballDeltaX = -2;
     			paddleMove = false;
     			paddleDeltaX = 0;
-    			startTime = new Date();
+    			
+    			drawBackground();
+				createBricks();
+				drawPaddle();
+				drawBall();
 
-		       	gameLoop = setInterval(animate,20);
+				drawLives();
+				drawName ();
+
+    			setTimeout(function () {
+    				startTime = new Date();
+    				gameLoop = setInterval(animate,20);
+    			}, 500);
 
 		       	$(canvas).mousedown(function (e){
 		       		paddleMove= true;
@@ -337,7 +387,7 @@
     			ballDeltaX = 0;
     			setTimeout(function () {
     				ballDeltaY = -4;
-    				ballDeltaX = -2;
+    				ballDeltaX = -1;
     			}, 1000);
 			}
 

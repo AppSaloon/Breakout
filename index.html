@@ -36,18 +36,21 @@
                     verzameld. Dit is jouw tijd:
                 </p>
                 <p id="finalScore"></p>
-                <button id="sendScoreButton">Verstuur je score</button>
-                <button id="practiceButton">Nog even oefenen?</button>
+                <a id="sendScoreButton" class="doubleLine">
+                    Verstuur je score<br>
+                    <span>(een code kan maar éénmaal gebruikt worden)</span>
+                </a>
+                <a id="practiceButton" class="breakout-btn breakout-btn-green">Nog even oefenen?</a>
                 <hr>
-                <button id="practiceWhitoutButton">Oefenen zonder code</button>
+                <a id="practiceWhitoutButton" class="red">Oefenen zonder code</a>
             </div>
             <div class="overlay" id="gameOverOverlay" style="display:none;">
                 <p>
                     Game over!
                 </p>
-                <button id="practiceButton">Nog even oefenen?</button>
+                <a id="practiceButton">Nog even oefenen?</a>
                 <hr>
-                <button id="practiceWhitoutButton">Oefenen zonder code</button>
+                <a id="practiceWhitoutButton" class="red">Oefenen zonder code</a>
             </div>
         </div>
         
@@ -59,7 +62,9 @@
                 var game = $('#canvas').breakout({name:contestantName});
                 $('#startButton').click(function(){
                     $(this).closest('.overlay').fadeOut(200);
-                    game.startGame();
+                    setTimeout(function () {
+                        game.startGame();
+                    },400);
                 });
                 $('#canvas').on('gameOver',function (e,result){
                     $('#gameOverOverlay').show();
