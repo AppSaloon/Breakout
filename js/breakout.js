@@ -37,7 +37,7 @@ $.extend($.fn, {
         var canvas = this[0];
         var $canvas = $(canvas);
         var context = canvas.getContext('2d');
-        var cursorCorrection = $canvas.position().left;
+        var cursorCorrection = $canvas.offset().left;
         var score = 0;
         var startTime;
         var elapsedTime;
