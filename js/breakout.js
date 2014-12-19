@@ -33,7 +33,7 @@
         		],
         		lives: 3
         	};
-        	var opts = $.extend( {}, defaults, options );
+        	var opts = $.extend(true, {}, defaults, options ); // true is needed to make a deep copy
 
             var canvas = this[0];
             var $canvas = $(canvas);
@@ -236,12 +236,9 @@
 				}
 			}
 
-			function getRandomInt(min, max) {
-    			return Math.floor(Math.random() * (max - min + 1)) + min;
-    		}
-
 			function brickHit (i,j) {
-				var brick = opts.bricksLayout[i][j] --;
+				$(canvas).trigger('hitBrick',[]);
+				var brick = opts.bricksLayout[i][j]--;
 
 				if (brick === 3) {
 					score ++;
@@ -252,9 +249,8 @@
 					if (score === 5) {
 						wonGame();
 					} 
-					
-
 				}
+
 				ballDeltaY = ballDeltaY - 0.1;
 			}
 
@@ -355,7 +351,7 @@
 
 			function startGame() {
 				ballDeltaY = -4;
-    			ballDeltaX = -2;
+    			ballDeltaX = getRandomInt(-2,2);
     			paddleMove = false;
     			paddleDeltaX = 0;
     			
@@ -387,7 +383,7 @@
     			ballDeltaX = 0;
     			setTimeout(function () {
     				ballDeltaY = -4;
-    				ballDeltaX = -1;
+    				ballDeltaX = getRandomInt(-2,2);
     			}, 1000);
 			}
 
@@ -405,7 +401,8 @@
 				elapsedTime = (new Date()) - startTime;
 				clearInterval(gameLoop);
 				$(canvas).trigger('won',[{
-					elapsedTime: millisecondsToStr(elapsedTime)
+					elapsedTime: millisecondsToStr(elapsedTime),
+					time: elapsedTime
 				}]);
 				showOverlay();
 				setTimeout(function() {
@@ -437,8 +434,22 @@
 		       	},
 		       	getElapsedTime: function () {
 		       		return (new Date()) - startTime;
+		       	},
+		       	restart: function() {
+		       		opts.bricksLayout = defaults.bricksLayout;
+		       		opts.lives = defaults.lives;
+		       		init();
+		       		startGame();
 		       	}
 		    });
+
+		    function getRandomInt(min, max) {
+    			return Math.floor(Math.random() * (max - min + 1)) + min;
+    		}
+
+    		function getRandom(min,max) {
+    			return Math.random() * (max - min) + min;
+    		}
         }
     });
 })( jQuery );
