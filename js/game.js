@@ -4,7 +4,14 @@ $(function () {
 
     ga('send', 'event', 'breakout-game', 'load-game', contestantName);
 
-    var game = $('#canvas').breakout({name:contestantName});
+    var game = $('#canvas').breakout({
+        name:contestantName,
+        backgroundImage : $('#backgroundImage')[0],
+        ballImage : $('#ballImage')[0],
+        livesImage : $("#livesImage")[0],
+        spoonImage : $('#spoonImage')[0],
+        popsImage : $('#popsImage')[0]
+    });
 
     $('#startButton').click(function(){
     	ga('send', 'event', 'breakout-game', 'start-game');
@@ -16,13 +23,10 @@ $(function () {
 
     $('#canvas').on('gameOver',function (e,result){
         $('#gameOverOverlay').show();
-        showLives(0,3);
         ga('send', 'event', 'breakout-game', 'game-over');
     });
 
     $('#canvas').on('lostLive',function (e,result){
-        console.log(result);
-        showLives(result.lives,3);
         ga('send', 'event', 'breakout-game', 'lost-live');
     });
 

@@ -3,18 +3,36 @@
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <title>Breakout - A fast fun game</title>
-        <script src="./bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="./dist/breakout_game.js"></script>
         <link rel="stylesheet" type="text/css" href="./css/breakout_style.css">
+        <script type="text/javascript">ga= function() {};</script>
     </head>
     <body>    
         <div id="game">
             <input name="name" type="hidden" value="Lotte">
             <div style="display:none;">
-                <img src="./img/breakout_background.jpg">
+                <ul>
+                    <li>
+                        <img id="backgroundImage" src="./wp-content/themes/kelloggs-spoons/assets/img/breakout_background.jpg">
+                    </li>
+                    <li>
+                        <img id="ballImage" src="./wp-content/themes/kelloggs-spoons/assets/img/bal.png">
+                    </li>
+                    <li>
+                        <img id="livesImage" src="./wp-content/themes/kelloggs-spoons/assets/img/levens_sprite.png">
+                    </li>
+                    <li>
+                        <img id="spoonImage" src="./wp-content/themes/kelloggs-spoons/assets/img/spoon.png">
+                    </li>
+                    <li>
+                        <img id="popsImage" src="./wp-content/themes/kelloggs-spoons/assets/img/pops.png">
+                    </li>
+                </ul>
+                
             </div>
             <div class="topBar">
                 <div id="score">X<span class="number">0</span></div>
-                <div id="time"><img src="./img/klokje.png"> <span><span class="seconds">00.0</span></span></div>
+                <div id="time"><img src="./wp-content/themes/kelloggs-spoons/assets/img/klokje.png"> <span><span class="seconds">00.0</span></span></div>
             </div>
             
             <canvas id="canvas" width="799" height="595"> 
@@ -25,7 +43,7 @@
                     Beweeg je <span>computermuis</span> als je op<br>
                     een computer speelt of gebruik <br>
                     je <span>vingers</span> als je op tablet speelt.<br>
-                    <img src="./img/mouse_or_swipe.png">
+                    <img src="./wp-content/themes/kelloggs-spoons/assets/img/mouse_or_swipe.png">
                 </p>
                 
                 <a id="startButton">Klaar? start!</a>
@@ -62,8 +80,6 @@
             </div>
         </div>
         
-        <script type="text/javascript" src="./js/breakout.js"></script>
-        <script type="text/javascript" src="./js/crypto.js"></script>
-        <script type="text/javascript" src="./js/game.js"></script>
+        
     </body>
 </html>
