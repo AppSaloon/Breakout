@@ -69,6 +69,7 @@ $(function () {
     $('.restartGame').click(function (e) {
         e.preventDefault();
         game.restart();
+        $('#score span').text(0);
         $(e.target).closest('.overlay').hide();
         ga('send', 'event', 'breakout-game', 'restart-game');
     });

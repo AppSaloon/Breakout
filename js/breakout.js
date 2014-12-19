@@ -345,7 +345,7 @@ $.extend($.fn, {
 		function startGame() {
 			ballDeltaY = -4;
 			ballDeltaX = getRandomInt(-2,2);
-			paddleMove = false;
+			paddleMove = true;
 			paddleDeltaX = 0;
 			
 			drawBackground();
@@ -361,12 +361,12 @@ $.extend($.fn, {
 				gameLoop = setInterval(animate,20);
 			}, 500);
 
-	       	$(canvas).mousedown(function (e){
+	       	/*$(canvas).mousedown(function (e){
 	       		paddleMove= true;
 	       	});
 	       	$(document).mouseup(function(e){
 	       		paddleMove= false;
-	       	});
+	       	});*/
 		}
 
 		function reStartGame () {
@@ -429,8 +429,15 @@ $.extend($.fn, {
 	       		return (new Date()) - startTime;
 	       	},
 	       	restart: function() {
-	       		opts.bricksLayout = defaults.bricksLayout;
-	       		opts.lives = defaults.lives;
+	       		opts.bricksLayout = [
+	    			[1,1,1,1,1,1,3,1,1,1],
+				    [1,1,3,1,1,1,1,1,1,1],
+				    [1,1,1,1,1,1,1,3,1,1],
+				    [1,1,1,3,1,1,1,1,1,1],
+				    [1,1,3,1,1,1,1,1,1,1],
+	    		];
+	       		opts.lives = 3;
+	       		score = 0;
 	       		init();
 	       		startGame();
 	       	}
