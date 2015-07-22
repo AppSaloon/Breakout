@@ -1,5 +1,7 @@
-$.extend($.fn, {
+jQuery.extend(jQuery.fn, {
+
     breakout: function(options){
+    	var $ = jQuery;
     	var defaults = {
     		paddleType:"rectangle",
     		paddleX: 200,
@@ -66,6 +68,8 @@ $.extend($.fn, {
 			init();
 		};
 
+		var touchable = 'createTouch' in document;
+
         function init(){
         	generateBricksType();
 
@@ -86,10 +90,34 @@ $.extend($.fn, {
 
 			showOverlay();
 
-			document.onmousemove = function(e){
-				cursorX = e.pageX - cursorCorrection;
-				cursorY = e.pageY;
-			};
+		    /*if (typeof document.onmousemove === 'function') {
+		    	
+		    } else if (document.ontouchmove === 'function') {
+		    	$('canvas').on('touchmove' ,function (e) {
+		    		if (typeof e.changedTouches !== 'undefined') {
+						e.preventDefault();
+						cursorX = e.changedTouches[0].pageX - cursorCorrection;
+						cursorY = e.changedTouches[0].pageY;
+					} else {
+						cursorX = e.pageX - cursorCorrection;
+						cursorY = e.pageY;
+				        e.preventDefault();
+					}
+		    	});
+		    } */
+
+		    if(touchable) {
+				canvas.addEventListener( 'touchmove', function (e) {
+					e.preventDefault();
+					cursorX = e.touches[0].pageX - cursorCorrection;
+					cursorY = e.touches[0].pageY;
+				}, false );
+			} else {
+				document.onmousemove = function(e){
+					cursorX = e.pageX - cursorCorrection;
+					cursorY = e.pageY;
+				};
+			}
         }
 
         function generateBricksType () {

@@ -1,4 +1,4 @@
-$(function () {
+(function($) {
     $.marap = {};
     var contestantName = $('input[name="name"]').val();
 
@@ -73,4 +73,4 @@ $(function () {
         $(e.target).closest('.overlay').hide();
         ga('send', 'event', 'breakout-game', 'restart-game');
     });
-});
+})( jQuery );
